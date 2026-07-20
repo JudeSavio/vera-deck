@@ -103,8 +103,9 @@ button{ font-family:var(--mono); cursor:pointer; }
 .block__lab{ font-family:var(--mono); font-size:10px; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-3); display:flex; align-items:center; gap:8px; }
 .block__lab::before{ content:""; width:6px; height:6px; border-radius:50%; background:var(--accent); box-shadow:0 0 7px var(--accent); flex:none; }
 .focus__t{ font-size:15.5px; line-height:1.52; color:var(--ink-2); }
-.say{ border-left:2px solid var(--accent-dim); padding:3px 0 3px 16px; }
-.say__t{ font-family:var(--sans); font-weight:450; font-size:clamp(15.5px,1.85vw,17.5px); line-height:1.62; color:var(--ink); }
+.say{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:11px; }
+.say li{ display:flex; align-items:baseline; gap:11px; font-family:var(--sans); font-size:clamp(15px,1.75vw,17px); line-height:1.5; color:var(--ink); }
+.say li::before{ content:"›"; flex:none; color:var(--accent); font-family:var(--display); font-weight:800; font-size:1.05em; }
 .chip{ align-self:flex-start; font-family:var(--mono); font-size:10.5px; letter-spacing:.03em; color:var(--ink-2); background:var(--panel); border:1px solid var(--line-2); border-radius:20px; padding:6px 13px; display:inline-flex; gap:8px; align-items:center; line-height:1.3; }
 .chip b{ color:var(--accent); font-weight:700; white-space:nowrap; }
 
@@ -172,62 +173,135 @@ button{ font-family:var(--mono); cursor:pointer; }
 
   /* per-slide script — t: title, f: focus (what to do on the slide), s: say (spoken line) */
   var SLIDES = {
-    1:{ t:"Cover", f:"Warm open. Let the logo settle, then introduce the five of you — don’t rush it.",
-        s:"Thanks for making the time. We’re Vera, and in one line we’re the revenue-integrity layer for veterinary practices. There are five of us and we each built a piece of this, so we’ll each take you through our part. I’m Jude — let me set up why we exist." },
-    2:{ t:"The thesis", f:"One line. Say it, then pause and let it land before you hand over.",
-        s:"If you take one thing from today, take this. Vera lands in a clinic as an ambient AI scribe — that’s the wedge, it’s how we get in the door cheaply. But the business is what comes next: becoming the cross-PIMS layer that recovers the revenue every practice is already owed. The scribe gets us in; the recovery is what we’re really building. Chirag will show you why that money is just sitting there — over to you." },
-    3:{ t:"The opportunity", f:"Take the baton warmly. Frame the problem before any numbers.",
-        s:"Thanks Jude. I’m Chirag, I run business development. Here’s the setup: this is a big, growing market that’s quietly losing money — and it’s losing it in two different ways. Let me take you through both, starting with the people." },
-    4:{ t:"The people problem", f:"Make it visceral — the workforce is stretched thin.",
-        s:"Vets are in their eighth straight year of shortage, and these numbers tell the story. A role that took eight weeks to fill in 2014 now takes twenty-five; over a third of vacancies stay open longer than a year; and six in ten vets have recently thought about leaving. A named driver behind that is documentation — the notes that get done after hours, night after night. The people holding this up are stretched to breaking." },
-    5:{ t:"The money problem", f:"Pivot from people-pain to money-pain — losses nobody sees.",
-        s:"Now the money — and this is the part clinics genuinely can’t see. A practice that feels completely flat-out is still losing revenue it never notices. Charges get written off instead of re-billed; some clinics even pay staff just to check invoices before discharge, and still find hundreds of dollars a month in errors by hand. Phones ring out, slots sit empty, recalls lapse. None of it ever shows up as a line on the P&L — which is exactly why it never gets fixed." },
-    6:{ t:"The four leaks", f:"Reveal the four leaks one at a time; let each number land before the next.",
-        s:"So where is all that money going? Four leaks, and they’re in every clinic. Missed charges first — five to ten percent of revenue simply never billed; AAHA found seventeen percent of lab tests alone go out unbilled. Then missed calls — a quarter of inbound calls go unanswered, and most of those callers never ring back, they just walk to the next clinic. No-shows — ten to twenty percent of booked slots, every empty one a fixed cost earning nothing. And the big one, lapsed recall — the most under-used lever there is. One at a time they look minor. Watch them stack up." },
-    7:{ t:"The recoverable prize", f:"Slow down on the big number — this is the prize Vera is paid on.",
-        s:"And here’s the stack. Put those four leaks together and every clinic is leaving four to eight thousand dollars on the table — every single month. Now the part that matters for you as investors: that is the number Vera gets paid a share of. We don’t charge a flat fee and hope — we take a cut of money we actually put back. The product sells on results, not promises." },
-    8:{ t:"What Vera is", f:"Define the product in one breath, then hand to Hayley.",
-        s:"So what is Vera, in plain terms? It’s an AI scribe that pays for itself — and then makes the practice money it already earned. It sits in the consult with consent, writes the notes straight back into whatever software the clinic already runs, and while it’s listening, it quietly flags the billable items that never made it onto the invoice. The scribe is the hook; the recovery is the point. Hayley will take you under the hood — over to you." },
-    9:{ t:"The product & team", f:"Take the baton. Set up both halves: how it works, and who’s behind it.",
-        s:"Thanks Chirag. I’m Hayley, I look after strategy. You’ve heard the problem and the prize — let me show you how Vera actually works, and then the team that’s building it." },
-    10:{ t:"Listen · Document · Recover", f:"Three moves — linger on the third. That’s the business, not the demo.",
-        s:"It comes down to three moves. First, listen — ambient capture of the consult, consent-first, on any device. Second, document — accurate notes written straight back into whatever PIMS the clinic already runs. Those two are the wedge; they’re what wins the room in a demo. But the third move is the whole business: recover — catching the missed charges, calls, no-shows and lapsed recalls, and we’re paid on what comes back. Everyone else stops at the first two. We built for the third." },
-    11:{ t:"Wedge → platform", f:"Walk the three phases: land with the scribe, expand into recovery, then the moat.",
-        s:"Here’s how that becomes a company, not just a feature. Phase one, we win the room with the scribe — best-in-class, writing back into the existing PIMS, already flagging billable items it overhears. Phase two, we expand into the revenue-integrity modules — charge capture, missed-call recovery, no-show backfill, recall — and that’s the part priced on recovery. Phase three, the data across all those clinics becomes practice intelligence: benchmarking, forecasting, a network no single clinic could build alone. Land with the scribe, expand into the business, and the data becomes the moat." },
-    12:{ t:"Pricing", f:"Reveal the tiers. Stress the scribe is cheap on purpose — it’s distribution.",
-        s:"And the pricing is deliberately upside-down from what you’d expect. The scribe — tier one — is a hundred and ninety-nine dollars a seat, priced low on purpose; its job is distribution, not margin. Tier two, the recovery layer at five ninety-nine a clinic, is where the value sits — a clinic clawing back four to eight thousand a month pays only a fraction of that back to us. Tier three adds the intelligence layer. The headline for you: a clinic recovering thousands pays us a slice of it, at a seventy-five to seventy-eight percent gross margin." },
-    13:{ t:"The company today", f:"Credibility beat — small, disciplined, and already profitable.",
-        s:"A quick reality check on where we are, because it’s unusual. Five founders, fifty thousand each — a quarter of a million in — zero debt, and fully founder-owned. And we reached our first profitable year on that alone, before a dollar of outside capital. Pilots are live in Australia; the US is the scale market. I want this to land before Jude’s numbers later: this raise is about acceleration, not survival." },
-    14:{ t:"The team", f:"Light each founder’s pad in turn; end on yourself, then hand to Siyuan.",
-        s:"And it’s the five of us on one cap table — each of us owns a pad on the mark, fifty thousand each, equal shares. Jude on the model and the raise; Chirag Parmar on business development; me on strategy; Siyuan on marketing; Chirag Singh on risk. After the seed, the founding team still holds seventy percent — we’re built to stay. Siyuan, tell them what’s actually happening out in the market." },
-    15:{ t:"Traction & the market", f:"Take the baton. Two beats: pilots are live, and the market is open.",
-        s:"Thanks Hayley. I’m Siyuan, I run marketing. Everything you’ve just heard is already being tested in real clinics — so let me start with what the pilots are showing, then how big this actually gets." },
-    16:{ t:"Traction so far", f:"Early but real — pilots, hours saved, revenue surfaced. (Swap in real numbers when we have them.)",
-        s:"Pilots are live, and the numbers are already moving. Around fifteen ANZ clinics in the cohort today; we’re saving vets one to two hours a day on documentation, surfacing that four-to-eight-thousand a month in recoverable revenue, and holding a gross margin north of seventy-five percent. Here’s the discipline behind it: the metric that wins a Series A is audited recovered-revenue per clinic, so we engineered these pilots with before-and-after controls from day one to prove exactly that. I’ll be upfront that these figures are early and illustrative — but they’re the right numbers to be chasing." },
-    17:{ t:"The Australian market", f:"Size the beachhead — big, and running on ageing software.",
-        s:"And the market we’re starting in is bigger than people assume. Australians spend twenty-one billion dollars a year on their pets; vet services alone are five point seven billion, across roughly three thousand eight hundred practices and sixteen thousand vets. That’s about one and a half million dollars of revenue per practice, at gross margins of seventy-four to seventy-seven percent — and seventy-three percent of households own a pet. Big, recession-resilient, running on ageing software, and healthy enough to afford a tool that plainly pays for itself." },
-    18:{ t:"Where to play", f:"Toggle AU → US. ANZ is the beachhead; the US is the same playbook at scale.",
-        s:"So why start here? ANZ is the beachhead — big, growing, and genuinely software-starved, with about three thousand eight hundred practices. But watch what happens when I flip to the US: roughly thirty-five thousand practices, about nine times the size, and the exact same playbook. We earn the right to that market by winning ANZ first — and the model only ever counts ANZ." },
-    19:{ t:"The open lane", f:"Point at the open-lane card — the connective tissue is ours. Then hand to Chirag.",
-        s:"And here’s why we think this lane is wide open. Look across the field: the scribes — VetRec, Heidi, Scribenote — write great notes but they’re racing each other to free, with no path to recovered revenue. The PIMS could do charge capture, but only if a clinic rips out its whole system. Phone tools just answer calls. Everyone owns one piece; nobody owns the connective tissue that sits across all of them — and that’s our lane. Cancel Vera and you re-open the leaks. Chirag will walk you through how we’ve de-risked all of this." },
-    20:{ t:"Roadmap, risk & compliance", f:"Take the baton. Set up where we’re going and how we’ve de-risked it.",
-        s:"Thanks Siyuan. I’m Chirag Singh, I own risk and compliance. Investors rightly ask two questions — where is this going, and how could it break — so I’m going to take both of them head-on." },
-    21:{ t:"Roadmap", f:"Tie each milestone to a driver in the model — clinics, suite, then the US.",
-        s:"Here’s the next twenty-four months, and it’s deliberately paced. This year, around fifteen clinics — scribe plus charge capture live across the ANZ pilots, consent and PIMS write-back hardened, first paid conversions. Next year, sixty clinics — the full recovery suite shipped, New Zealand, and our first corporate-group pilot. Year three, a hundred and twenty clinics, the practice-intelligence layer, and US entry — the same wedge into a market nine times the size. Every one of those milestones maps to a driver in Jude’s model: more clinics, higher value per clinic, new geographies." },
-    22:{ t:"Risks & mitigations", f:"Pre-mortem tone — name each risk, then the same answer: the moat.",
-        s:"Now the honest part — the ways this fails, and our decision against each. The scribe gets commoditised and goes free? Fine — we treat the scribe as customer acquisition and monetise the recovery layer a free scribe can’t match. A PIMS builds it themselves? We stay cross-PIMS and move faster than a rip-and-replace ever could. Charge-capture liability? Human-in-the-loop by design — Vera suggests, never auto-bills, and every suggestion traces back to the exact thing that was said. We’ve pre-mortemed this; the mitigations are built in, not bolted on." },
-    23:{ t:"Compliance by design", f:"Consent-first, Australian data residency, the vet stays the accountable author.",
-        s:"And because we’re recording clinical consults, compliance isn’t a footnote for us — it’s designed in. Scripted verbal consent from the owner at the start of every recorded consult, timestamped in-app; one tap to decline, with no change to the standard of care. Australian data residency, encryption in transit and at rest, a clear retention-and-deletion policy, and we’re Privacy Act and OAIC-aligned — no training on client audio without explicit consent. And crucially, the vet stays the accountable author: Vera proposes, the clinician reviews and signs. One workflow that holds across all eight jurisdictions." },
-    24:{ t:"The finances", f:"Close your section cleanly, then hand the numbers to Jude.",
-        s:"So that’s the risk picture — and I’m comfortable standing behind every line of it. Which brings us to the numbers, and the ask. Jude built the model, so I’ll hand back to him." },
-    25:{ t:"Profit & loss", f:"Toggle Revenue / Net / Cash. The point: profitable in every single year.",
-        s:"Thanks Chirag. Here’s the three-year forecast, and I’ll toggle through it. Revenue first — a hundred and fifty thousand, then seven hundred thousand, then two million by year three. Now net profit, and this is the line that matters: we’re positive in year one and every year after — the company never runs at a loss. And cash — it compounds on profitability, not burn, finishing above one point two million. Gross margin climbs from seventy-five to seventy-eight percent. This is a profitable business, not a promise of one." },
-    26:{ t:"The engine", f:"Three drivers behind the numbers — keep it crisp.",
-        s:"And here’s what actually drives those numbers — three simple levers. More clinics: fifteen, to sixty, to a hundred and twenty. More value per clinic: blended revenue per clinic climbing from nine hundred to sixteen-fifty a month as they adopt the recovery and intelligence layers. And a balance sheet with zero debt — net assets growing every year on retained profit, from a quarter-million to one and a quarter million. Clinics, times value, compounding, debt-free." },
-    27:{ t:"The ask", f:"State the number, then the framing: we’re raising to accelerate, not to survive.",
-        s:"Which brings us to the ask. We’re raising seven hundred and fifty thousand dollars for thirty percent — a one-point-seven-five pre-money, two-and-a-half post. Here’s where it goes: forty percent into product and AI engineering, thirty-five into go-to-market for the ANZ and US push, fifteen into compliance and data residency, and ten as working-capital buffer. Founders keep seventy percent, the company stays debt-free — and remember, we’re already profitable. This money buys speed on the ANZ-to-US jump; it doesn’t buy survival." },
-    28:{ t:"Close", f:"Warm close. Let the logo build and the thank-you land — then stop talking.",
-        s:"So that’s Vera — bootstrapped, already profitable, pilots live, and a clear line from an AI scribe today to the revenue-integrity layer for the whole industry. We’d genuinely love to have you with us for the ANZ-to-US chapter. Thank you — let’s talk." }
+    1:{ t:"Cover", f:"Warm open. Let the logo settle, then introduce the five of you — don’t rush it.", s:[
+        "Warm welcome — thanks for the time",
+        "One line: Vera is the revenue-integrity layer for vet practices",
+        "Five founders — each takes their part; I’ll open" ] },
+    2:{ t:"The thesis", f:"One line. Say it, then pause and let it land before you hand over.", s:[
+        "The one line to remember today",
+        "Scribe = the wedge (cheap way in the door)",
+        "Revenue-integrity layer = the actual business",
+        "Hand to Chirag — why that money’s just sitting there" ] },
+    3:{ t:"The opportunity", f:"Take the baton warmly. Frame the problem before any numbers.", s:[
+        "Take the baton — ‘Thanks Jude, I’m Chirag’",
+        "Big, growing market — quietly losing money",
+        "Two ways it bleeds: people, then money" ] },
+    4:{ t:"The people problem", f:"Make it visceral — the workforce is stretched thin.", s:[
+        "8th straight year of vet shortage",
+        "8→25 wks to fill a role · 37% open 12+ months · 60% considered leaving",
+        "Documentation a named driver — notes done after hours",
+        "The people holding it up are stretched to breaking" ] },
+    5:{ t:"The money problem", f:"Pivot from people-pain to money-pain — losses nobody sees.", s:[
+        "Feels flat-out, still losing money they can’t see",
+        "Charges written off; some pay staff to check invoices — still miss hundreds/mo",
+        "Phones ring out, slots empty, recalls lapse",
+        "Never a P&L line item — so it never gets fixed" ] },
+    6:{ t:"The four leaks", f:"Reveal the four leaks one at a time; let each number land before the next.", s:[
+        "Missed charges — 5–10% never billed (AAHA: 17% of lab tests)",
+        "Missed calls — ~25% unanswered; callers walk to the next clinic",
+        "No-shows — 10–20% of slots, fixed cost at zero",
+        "Lapsed recall — the #1 under-used lever; now watch them stack up" ] },
+    7:{ t:"The recoverable prize", f:"Slow down on the big number — this is the prize Vera is paid on.", s:[
+        "Add them up: A$4–8k per clinic, every month",
+        "That’s the number Vera is paid a share of",
+        "So we sell on results, not promises" ] },
+    8:{ t:"What Vera is", f:"Define the product in one breath, then hand to Hayley.", s:[
+        "An AI scribe that pays for itself — then makes money they already earned",
+        "Records with consent → notes into their existing PIMS",
+        "Flags billable items that never hit the invoice",
+        "Hand to Hayley — how it works under the hood" ] },
+    9:{ t:"The product & team", f:"Take the baton. Set up both halves: how it works, and who’s behind it.", s:[
+        "Take the baton — ‘Thanks Chirag, I’m Hayley’",
+        "Two things: how it works, then the team" ] },
+    10:{ t:"Listen · Document · Recover", f:"Three moves — linger on the third. That’s the business, not the demo.", s:[
+        "Listen — ambient capture, consent-first, any device",
+        "Document — notes back into whatever PIMS they run",
+        "Those two are the wedge (they win the demo)",
+        "Recover — the third move IS the business, paid on results" ] },
+    11:{ t:"Wedge → platform", f:"Walk the three phases: land with the scribe, expand into recovery, then the moat.", s:[
+        "Phase 1 — land with the scribe (writes back + flags items)",
+        "Phase 2 — expand into recovery modules (priced on recovery)",
+        "Phase 3 — data becomes practice intelligence (the moat)",
+        "Land, expand, then the network locks it in" ] },
+    12:{ t:"Pricing", f:"Reveal the tiers. Stress the scribe is cheap on purpose — it’s distribution.", s:[
+        "Tier 1 scribe — A$199/seat, cheap on purpose (distribution)",
+        "Tier 2 recovery — A$599/clinic, where the value is",
+        "Tier 3 intelligence — A$399/clinic",
+        "Recover thousands, pay a fraction — 75–78% gross margin" ] },
+    13:{ t:"The company today", f:"Credibility beat — small, disciplined, and already profitable.", s:[
+        "5 founders · A$50k each = A$250k in · zero debt",
+        "First profitable year before outside capital",
+        "Pilots live in AU; US is the scale market",
+        "This raise = acceleration, not survival" ] },
+    14:{ t:"The team", f:"Light each founder’s pad in turn; end on yourself, then hand to Siyuan.", s:[
+        "Five founders, one cap table — a pad each",
+        "Jude finance · Chirag P biz dev · Hayley strategy · Siyuan marketing · Chirag S risk",
+        "After the seed, founders keep 70%",
+        "Hand to Siyuan — traction and the market" ] },
+    15:{ t:"Traction & the market", f:"Take the baton. Two beats: pilots are live, and the market is open.", s:[
+        "Take the baton — ‘Thanks Hayley, I’m Siyuan’",
+        "Two beats: pilots are live, market’s wide open" ] },
+    16:{ t:"Traction so far", f:"Early but real — pilots, hours saved, revenue surfaced. (Swap in real numbers when we have them.)", s:[
+        "~15 ANZ pilot clinics today",
+        "1–2 hrs/vet/day saved · A$4–8k/mo surfaced · 75%+ GM",
+        "Built to prove audited recovered-revenue per clinic (before/after)",
+        "Flag it: early & illustrative — but the right metric" ] },
+    17:{ t:"The Australian market", f:"Size the beachhead — big, and running on ageing software.", s:[
+        "A$21.3b pet spend · A$5.7b vet services",
+        "3,793 practices · 16,167 vets · ~A$1.5m per practice",
+        "73% of households own a pet",
+        "Big, resilient, software-starved — can afford a tool that pays for itself" ] },
+    18:{ t:"Where to play", f:"Toggle AU → US. ANZ is the beachhead; the US is the same playbook at scale.", s:[
+        "ANZ first — the beachhead, ~3,793 practices",
+        "Flip to US: ~35,000 practices, ~9× the size",
+        "Same playbook; earn the US by winning ANZ" ] },
+    19:{ t:"The open lane", f:"Point at the open-lane card — the connective tissue is ours. Then hand to Chirag.", s:[
+        "Scribes (VetRec/Heidi/Scribenote) — racing to free, no recovery",
+        "PIMS — could do it, but only rip-and-replace",
+        "Phone tools — just answer calls",
+        "Nobody owns the connective tissue — that’s us. Hand to Chirag" ] },
+    20:{ t:"Roadmap, risk & compliance", f:"Take the baton. Set up where we’re going and how we’ve de-risked it.", s:[
+        "Take the baton — ‘Thanks Siyuan, I’m Chirag Singh’",
+        "Two questions: where it’s going + how it could break" ] },
+    21:{ t:"Roadmap", f:"Tie each milestone to a driver in the model — clinics, suite, then the US.", s:[
+        "FY26/27: ~15 clinics — scribe + charge capture, first paid",
+        "FY27/28: ~60 — full recovery suite, NZ, first corporate group",
+        "FY28/29: ~120 — intelligence layer + US entry",
+        "Each milestone maps to a driver in Jude’s model" ] },
+    22:{ t:"Risks & mitigations", f:"Pre-mortem tone — name each risk, then the same answer: the moat.", s:[
+        "Scribe goes free? Monetise recovery a free scribe can’t",
+        "PIMS builds it? Stay cross-PIMS, faster than rip-and-replace",
+        "Charge-capture liability? Human-in-the-loop, never auto-bills",
+        "Pre-mortemed — mitigations built in, not bolted on" ] },
+    23:{ t:"Compliance by design", f:"Consent-first, Australian data residency, the vet stays the accountable author.", s:[
+        "Scripted verbal consent every consult, timestamped; one-tap decline",
+        "AU data residency · encryption · clear retention & deletion",
+        "Privacy Act & OAIC-aligned — no training on audio without consent",
+        "Vet stays the accountable author — Vera proposes, clinician signs" ] },
+    24:{ t:"The finances", f:"Close your section cleanly, then hand the numbers to Jude.", s:[
+        "Risk picture — solid, I stand behind it",
+        "Now the numbers and the ask",
+        "Hand back to Jude — he built the model" ] },
+    25:{ t:"Profit & loss", f:"Toggle Revenue / Net / Cash. The point: profitable in every single year.", s:[
+        "3-year forecast — I’ll toggle through it",
+        "Revenue: A$150k → 700k → 2.0m",
+        "Net profit positive every year — never runs at a loss",
+        "Cash compounds to A$1.2m · margin 75→78%" ] },
+    26:{ t:"The engine", f:"Three drivers behind the numbers — keep it crisp.", s:[
+        "Three levers behind the numbers",
+        "More clinics: 15 → 60 → 120",
+        "More value/clinic: ARPU A$900 → 1,650/mo",
+        "Zero debt — net assets A$0.26m → 1.25m" ] },
+    27:{ t:"The ask", f:"State the number, then the framing: we’re raising to accelerate, not to survive.", s:[
+        "A$750k for 30% — A$1.75m pre / A$2.5m post",
+        "Use: 40% product/AI · 35% GTM · 15% compliance · 10% buffer",
+        "Founders keep 70%, debt-free, already profitable",
+        "Funds the ANZ→US jump — speed, not survival" ] },
+    28:{ t:"Close", f:"Warm close. Let the logo build and the thank-you land — then stop talking.", s:[
+        "Vera: bootstrapped, profitable, pilots live",
+        "Clear line: scribe today → revenue-integrity layer for the industry",
+        "We’d love you along for the ANZ→US chapter",
+        "Thank you — let’s talk" ] }
   };
 
   var HANDOFF = { 2:"Chirag Parmar", 8:"Hayley Ying", 14:"Siyuan Pan", 19:"Chirag Singh", 24:"Jude Savio" };
@@ -305,7 +379,7 @@ button{ font-family:var(--mono); cursor:pointer; }
     var html='<div class="script__eye">Slide '+pad2(n)+"  ·  "+secFor(n)+'</div>'
       +'<h2 class="script__ttl">'+d.t+'</h2>'
       +'<div class="block"><div class="block__lab">Focus</div><div class="focus__t">'+d.f+'</div></div>'
-      +'<div class="block"><div class="block__lab">Say</div><div class="say"><div class="say__t">'+d.s+'</div></div></div>';
+      +'<div class="block"><div class="block__lab">Say</div><ul class="say">'+(Array.isArray(d.s)?d.s:[d.s]).map(function(x){return "<li>"+x+"</li>";}).join("")+'</ul></div>';
     if(BEATS[n]) html+='<div class="chip"><b>▸ Builds in steps</b> '+BEATS[n]+'</div>';
     if(HANDOFF[n]) html+='<div class="handoff">'+ARROW+'<div><div class="handoff__t">Hand off to <b>'+HANDOFF[n]+'</b></div><div class="handoff__k">End of your section — pass the baton</div></div></div>';
     else if(n===28) html+='<div class="end">End of deck — thank the room</div>';
