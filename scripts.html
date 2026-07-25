@@ -130,6 +130,21 @@ button{ font-family:var(--mono); cursor:pointer; }
   @keyframes hpulse{ 0%,100%{ box-shadow:0 0 0 0 rgba(54,194,139,0); } 50%{ box-shadow:0 0 24px -3px rgba(54,194,139,.5); } }
   @keyframes nudge{ 0%,100%{ transform:translateX(0); } 50%{ transform:translateX(4px); } }
 }
+/* ---------- Jude-only founder numbers floater (stealth) ---------- */
+.cheat{ position:fixed; right:20px; bottom:20px; z-index:90; display:none; flex-direction:column; align-items:flex-end; gap:10px; }
+.cheat.cheat--on{ display:flex; }
+.cheat__panel{ display:none; width:min(340px,84vw); max-height:62vh; overflow-y:auto; background:linear-gradient(165deg,var(--panel),var(--panel-2)); border:1px solid var(--accent-dim); border-radius:14px; box-shadow:0 26px 64px -20px #000, inset 0 1px 0 var(--hair); padding:15px 16px 13px; }
+.cheat.open .cheat__panel{ display:block; }
+.cheat__hd{ font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); margin-bottom:8px; }
+.cheat__hd span{ color:var(--ink-3); }
+.cheat__grp{ font-family:var(--mono); font-size:8.5px; letter-spacing:.18em; text-transform:uppercase; color:var(--ink-3); margin:13px 0 4px; }
+.cheat__row{ display:flex; gap:10px; align-items:baseline; padding:5px 0; border-bottom:1px solid var(--line); }
+.cheat__row:last-child{ border-bottom:0; }
+.cheat__row b{ font-family:var(--display); font-weight:700; color:var(--ink); font-size:13px; flex:none; min-width:92px; letter-spacing:-.01em; }
+.cheat__row span{ font-size:11.5px; color:var(--ink-2); line-height:1.34; }
+.cheat__btn{ display:inline-flex; align-items:center; gap:7px; background:var(--panel); border:1px solid var(--line-2); color:var(--ink-3); border-radius:22px; padding:8px 14px; font-family:var(--mono); font-size:10px; letter-spacing:.11em; text-transform:uppercase; cursor:pointer; box-shadow:0 10px 24px -12px #000; opacity:.5; transition:color .2s,border-color .2s,box-shadow .2s,opacity .2s; }
+.cheat__btn:hover,.cheat.open .cheat__btn{ opacity:1; color:var(--accent); border-color:var(--accent); box-shadow:0 0 16px -4px var(--accent); }
+.cheat__btn svg{ width:13px; height:13px; }
 </style>
 </head>
 <body>
@@ -159,6 +174,35 @@ button{ font-family:var(--mono); cursor:pointer; }
       <div class="script" id="rBody"></div>
     </div>
   </section>
+</div>
+
+<div id="cheat" class="cheat" aria-live="polite">
+  <div class="cheat__panel">
+    <div class="cheat__hd">Founder numbers <span>· just for you</span></div>
+    <div class="cheat__grp">The one number</div>
+    <div class="cheat__row"><b>A$4–8k</b><span>per clinic / month — what we’re paid a slice of</span></div>
+    <div class="cheat__grp">The ask</div>
+    <div class="cheat__row"><b>A$750k · 30%</b><span>A$2.5M post · founders keep 70%</span></div>
+    <div class="cheat__row"><b>Why</b><span>already profitable → fuel, not survival; funds ANZ→US</span></div>
+    <div class="cheat__row"><b>Use</b><span>40% product · 35% GTM · 15% compliance · 10% buffer</span></div>
+    <div class="cheat__grp">3-year forecast</div>
+    <div class="cheat__row"><b>Revenue</b><span>A$150k → 700k → 2.0m</span></div>
+    <div class="cheat__row"><b>Net profit</b><span>+12.5k → +60k → +180k · positive every year</span></div>
+    <div class="cheat__row"><b>Margin</b><span>75 → 76 → 78%</span></div>
+    <div class="cheat__row"><b>Cash</b><span>→ A$1.2m · debt A$0</span></div>
+    <div class="cheat__grp">Drivers</div>
+    <div class="cheat__row"><b>Clinics</b><span>15 → 60 → 120</span></div>
+    <div class="cheat__row"><b>ARPU</b><span>A$900 → 1,650 / clinic / mo</span></div>
+    <div class="cheat__row"><b>Pricing</b><span>A$199 scribe · A$599 recovery · A$399 intel</span></div>
+    <div class="cheat__grp">Market</div>
+    <div class="cheat__row"><b>AU</b><span>A$5.7b vet services · A$21.3b pet spend</span></div>
+    <div class="cheat__row"><b>Practices</b><span>3,793 AU · ~35,000 US (~9×)</span></div>
+    <div class="cheat__grp">Today</div>
+    <div class="cheat__row"><b>Now</b><span>~15 clinics · profitable · A$250k in · A$0 debt</span></div>
+  </div>
+  <button class="cheat__btn" id="cheatBtn" aria-label="Founder numbers cheat sheet">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M4 20V10M12 20V4M20 20v-7"/></svg>Numbers
+  </button>
 </div>
 
 <script>
@@ -422,9 +466,10 @@ button{ font-family:var(--mono); cursor:pointer; }
     var sc=scopeByKey(scopeKey); if(!sc){ showHome(); return; }
     state.scope=sc; state.i=Math.max(0,Math.min(sc.slides.length-1, idx||0));
     home.hidden=true; run.hidden=false; window.scrollTo(0,0);
+    showCheat(sc.key==="jude");
     renderCard(); syncHash();
   }
-  function showHome(){ run.hidden=true; home.hidden=false; pv.src="about:blank";
+  function showHome(){ run.hidden=true; home.hidden=false; pv.src="about:blank"; showCheat(false);
     if(location.hash && location.hash!=="#home") history.replaceState(null,"","#"); }
   function next(){ if(state.i<state.scope.slides.length-1){ state.i++; renderCard(); syncHash(); } }
   function prev(){ if(state.i>0){ state.i--; renderCard(); syncHash(); } }
@@ -447,6 +492,9 @@ button{ font-family:var(--mono); cursor:pointer; }
   nextBtn.addEventListener("click", next);
   document.getElementById("replayBtn").addEventListener("click", function(){ setPreview(state.scope.slides[state.i], true); });
   run.addEventListener("click", function(e){ var b=e.target.closest("[data-saymode]"); if(b){ setMode(b.dataset.saymode); paintSay(); } });
+  var cheat=document.getElementById("cheat"), cheatBtn=document.getElementById("cheatBtn");
+  function showCheat(on){ if(!cheat) return; cheat.classList.toggle("cheat--on",!!on); if(!on) cheat.classList.remove("open"); }
+  if(cheatBtn) cheatBtn.addEventListener("click", function(){ cheat.classList.toggle("open"); });
   document.addEventListener("keydown", function(e){
     if(e.metaKey||e.ctrlKey||e.altKey) return;
     if(run.hidden) return;
