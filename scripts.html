@@ -213,7 +213,7 @@ button{ font-family:var(--mono); cursor:pointer; }
      PRESENTERS — relay order. slides[] = the deck slides they own.
      ============================================================ */
   var PRES = [
-    { key:"jude",    name:"Jude Savio",    role:"Founder · Finance",   slides:[1,2,25,26,27,28] },
+    { key:"jude",    name:"Jude Savio",    role:"Founder · Finance",   slides:[1,2,3,4,5,6,7,8,25,26,27,28] },
     { key:"cparmar", name:"Chirag Parmar", role:"Business Development",     slides:[3,4,5,6,7,8] },
     { key:"hayley",  name:"Hayley Ying",   role:"Strategy",                 slides:[9,10,11,12,13,14] },
     { key:"siyuan",  name:"Siyuan Pan",    role:"Marketing",                slides:[15,16,17,18,19] },
@@ -429,8 +429,27 @@ button{ font-family:var(--mono); cursor:pointer; }
   var sayMode=getMode();
   function setPreview(n, reload){ if(reload) pvR++; pv.src="index.html?embed"+(pvR?"&r="+pvR:"")+"#"+n; }
 
+  /* Jude-managed track: when Jude absorbs Chirag Parmar's stream (slides 3-8),
+     these overrides swap the baton/handoff lines for a continuous Jude narration.
+     Applied ONLY on scope "jude"; his own base slides, CP's track and the full
+     run-through are untouched. */
+  var JOVER={
+    2:{ f:"The one line — say it, let it land, then roll straight into the problem.", handoff:null,
+        s:["The one line = the whole company","Scribe takes the notes, cheap on purpose — not where the money is","The money is what it hears: missed charges, calls, no-shows, recalls","Recovery is the business — switch us on, never turn us off"],
+        p:"Here’s the one line, and it’s the whole company. Everyone’s building AI scribes to take the notes — we do too, and we price it cheap on purpose, because the notes aren’t where the money is. The money is in what the scribe hears: every clinic is quietly losing revenue to missed charges, missed calls, no-shows and lapsed recalls, and nobody’s plugging it. The scribe gets us in the door; recovering that money is the real business — and it’s why a clinic that switches us on never wants to turn us off. So let me show you exactly where that money’s leaking." },
+    3:{ f:"Rolling straight on from the thesis — frame the problem, no baton.",
+        s:["The opportunity: a big, growing market quietly losing money","It bleeds two ways — people, then money","Start with the people"],
+        p:"So here’s the opportunity — and it’s a big one. This is a large, growing market that’s quietly losing money in two different ways. I’ll take you through both, and it starts with the people." }
+  };
+  function slideData(n){
+    var b={ f:SLIDES[n].f, s:SLIDES[n].s, p:PARA[n], handoff:HANDOFF[n]||null };
+    if(state.scope && state.scope.key==="jude" && JOVER[n]){ var o=JOVER[n];
+      if("f" in o) b.f=o.f; if("s" in o) b.s=o.s; if("p" in o) b.p=o.p; if("handoff" in o) b.handoff=o.handoff; }
+    return b;
+  }
+
   function renderCard(){
-    var n=state.scope.slides[state.i], d=SLIDES[n], p=SLIDE_PRES[n];
+    var n=state.scope.slides[state.i], d=SLIDES[n], p=SLIDE_PRES[n], D=slideData(n);
     rName.textContent = (state.scope.key==="all") ? p.name : state.scope.name;
     rProg.textContent = ((state.scope.key==="all") ? "Full run-through" : state.scope.role) + "  ·  " + (state.i+1) + " / " + state.scope.slides.length;
     prevBtn.disabled = state.i===0;
@@ -438,10 +457,10 @@ button{ font-family:var(--mono); cursor:pointer; }
 
     var html='<div class="script__eye">Slide '+pad2(n)+"  ·  "+secFor(n)+'</div>'
       +'<h2 class="script__ttl">'+d.t+'</h2>'
-      +'<div class="block"><div class="block__lab">Focus</div><div class="focus__t">'+d.f+'</div></div>'
+      +'<div class="block"><div class="block__lab">Focus</div><div class="focus__t">'+D.f+'</div></div>'
       +'<div id="sayWrap" class="block"></div>';
     if(BEATS[n]) html+='<div class="chip"><b>▸ Builds in steps</b> '+BEATS[n]+'</div>';
-    if(HANDOFF[n]) html+='<div class="handoff">'+ARROW+'<div><div class="handoff__t">Hand off to <b>'+HANDOFF[n]+'</b></div><div class="handoff__k">End of your section — pass the baton</div></div></div>';
+    if(D.handoff) html+='<div class="handoff">'+ARROW+'<div><div class="handoff__t">Hand off to <b>'+D.handoff+'</b></div><div class="handoff__k">End of your section — pass the baton</div></div></div>';
     else if(n===28) html+='<div class="end">End of deck — thank the room</div>';
     rBody.innerHTML=html;
     paintSay();
@@ -452,9 +471,9 @@ button{ font-family:var(--mono); cursor:pointer; }
 
   function paintSay(){
     var wrap=document.getElementById("sayWrap"); if(!wrap) return;
-    var n=state.scope.slides[state.i], d=SLIDES[n];
-    var pts=Array.isArray(d.s)?d.s:[d.s];
-    var body=(sayMode==="script"&&PARA[n]) ? '<div class="sayp">'+PARA[n]+'</div>'
+    var n=state.scope.slides[state.i], d=SLIDES[n], D=slideData(n);
+    var pts=Array.isArray(D.s)?D.s:[D.s];
+    var body=(sayMode==="script"&&D.p) ? '<div class="sayp">'+D.p+'</div>'
       : '<ul class="say">'+pts.map(function(x){return "<li>"+x+"</li>";}).join("")+'</ul>';
     wrap.innerHTML='<div class="block__lab saylab"><span>Say</span><span class="saytog">'
       +'<button data-saymode="bullets"'+(sayMode!=="script"?' class="on"':'')+'>Bullets</button>'
