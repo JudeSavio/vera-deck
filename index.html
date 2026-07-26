@@ -557,7 +557,7 @@ body.embed .frame{ width:min(100vw, calc(100dvh * 16 / 9)); height:min(100dvh, c
         </div>
         <p class="cover__sub" data-anim>The revenue-integrity layer for veterinary practices.<br>Australia &amp; New Zealand &rarr; the United States.</p>
         <div class="cover__meta" data-anim>
-          <div><span class="cover__k">Investor pitch</span><span class="cover__mv">18 July 2026</span></div>
+          <div><span class="cover__k">Investor pitch</span><span class="cover__mv" id="coverDate">18 July 2026</span></div>
           <div><span class="cover__k">The ask</span><span class="cover__mv">A$750k <span class="cover__mv--sm">&middot; 30% &middot; A$2.5M post</span></span></div>
         </div>
         <div class="cover__team" data-anim>
@@ -1586,4 +1586,5 @@ body.embed .frame{ width:min(100vw, calc(100dvh * 16 / 9)); height:min(100dvh, c
 })();
 
 </script>
+<script>(function(){var e=document.getElementById("coverDate");if(e){try{e.textContent=new Date().toLocaleDateString("en-AU",{day:"numeric",month:"long",year:"numeric"});}catch(x){}}})();</script>
 </html>
