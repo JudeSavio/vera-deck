@@ -394,7 +394,12 @@ button{ font-family:var(--mono); cursor:pointer; }
     PRES.filter(function(p){return p.key==="jude";})[0].slides=JUDE_SLIDES[jmode];
     var curN=state.scope.slides[state.i]; state.scope=scopeByKey("jude");
     var idx=state.scope.slides.indexOf(curN); state.i=idx>=0?idx:0;
-    renderHome(); renderCard(); syncHash(); }
+    renderHome(); renderCard(); syncHash();
+    /* Pendo: track Jude track mode change */
+    if (typeof pendo !== 'undefined' && pendo.track) {
+      pendo.track("Track Mode Changed", { mode: m });
+    }
+  }
   function paintJTrack(){ var el=document.getElementById("jtrack"); if(!el) return;
     if(!state.scope||state.scope.key!=="jude"){ el.innerHTML=""; return; }
     el.innerHTML='<span class="jtrack__lab">Track</span><span class="jtog">'
@@ -526,6 +531,14 @@ button{ font-family:var(--mono); cursor:pointer; }
     home.hidden=true; run.hidden=false; window.scrollTo(0,0);
     showCheat(sc.key==="jude");
     renderCard(); syncHash();
+    /* Pendo: track presenter track selection */
+    if (typeof pendo !== 'undefined' && pendo.track) {
+      pendo.track("Presenter Track Selected", {
+        presenter_key: sc.key,
+        presenter_name: sc.name,
+        slide_count: sc.slides.length
+      });
+    }
   }
   function showHome(){ run.hidden=true; home.hidden=false; pv.src="about:blank"; showCheat(false); renderHome();
     if(location.hash && location.hash!=="#home") history.replaceState(null,"","#"); }
@@ -548,8 +561,26 @@ button{ font-family:var(--mono); cursor:pointer; }
   document.getElementById("backBtn").addEventListener("click", showHome);
   prevBtn.addEventListener("click", prev);
   nextBtn.addEventListener("click", next);
-  document.getElementById("replayBtn").addEventListener("click", function(){ setPreview(state.scope.slides[state.i], true); });
-  run.addEventListener("click", function(e){ var b=e.target.closest("[data-saymode]"); if(b){ setMode(b.dataset.saymode); paintSay(); } });
+  document.getElementById("replayBtn").addEventListener("click", function(){
+    setPreview(state.scope.slides[state.i], true);
+    /* Pendo: track slide preview replay */
+    if (typeof pendo !== 'undefined' && pendo.track) {
+      pendo.track("Slide Preview Replayed", {
+        slide_number: state.scope.slides[state.i],
+        presenter_key: state.scope.key
+      });
+    }
+  });
+  run.addEventListener("click", function(e){
+    var b=e.target.closest("[data-saymode]");
+    if(b){
+      setMode(b.dataset.saymode); paintSay();
+      /* Pendo: track script mode change */
+      if (typeof pendo !== 'undefined' && pendo.track) {
+        pendo.track("Script Mode Changed", { mode: b.dataset.saymode });
+      }
+    }
+  });
   run.addEventListener("click", function(e){ var b=e.target.closest("[data-jmode]"); if(b){ setJMode(b.dataset.jmode); } });
   var cheat=document.getElementById("cheat"), cheatBtn=document.getElementById("cheatBtn");
   function showCheat(on){ if(!cheat) return; cheat.classList.toggle("cheat--on",!!on); if(!on) cheat.classList.remove("open"); }

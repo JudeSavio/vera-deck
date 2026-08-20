@@ -1220,6 +1220,10 @@ body.embed .frame{ width:min(100vw, calc(100dvh * 16 / 9)); height:min(100dvh, c
   finSeg.forEach(function(b){ b.addEventListener('click', function(){
     renderFin(b.dataset.fin, true);
     curStep = Math.max(0, FIN_ORDER.indexOf(b.dataset.fin)); syncDots();
+    /* Pendo: track financial view toggle */
+    if (typeof pendo !== 'undefined' && pendo.track) {
+      pendo.track("Financial View Toggled", { view: b.dataset.fin });
+    }
   }); });
 
   /* ---------- MARKET AU <-> US toggle ---------- */
@@ -1262,6 +1266,10 @@ body.embed .frame{ width:min(100vw, calc(100dvh * 16 / 9)); height:min(100dvh, c
   mktSeg.forEach(function(b){ b.addEventListener('click', function(){
     renderMarket(b.dataset.mkt);
     curStep = Math.max(0, MKT_ORDER.indexOf(b.dataset.mkt)); syncDots();
+    /* Pendo: track market view toggle */
+    if (typeof pendo !== 'undefined' && pendo.track) {
+      pendo.track("Market View Toggled", { market: b.dataset.mkt });
+    }
   }); });
 
   /* ---------- WEDGE → PLATFORM stepper ---------- */
@@ -1479,6 +1487,21 @@ body.embed .frame{ width:min(100vw, calc(100dvh * 16 / 9)); height:min(100dvh, c
     if (EMBED) embedAutoplay();
     updatePresenter();
     if (opts.updateHash !== false) history.replaceState(null, '', '#' + (i+1));
+
+    /* Pendo: track slide views (skip embed previews) */
+    if (!EMBED && typeof pendo !== 'undefined' && pendo.track) {
+      pendo.track("Slide Viewed", {
+        slide_number: i + 1,
+        slide_title: s.dataset.title || '',
+        section: s.dataset.section || '',
+        presenter: s.dataset.presenter || '',
+        has_build_steps: !!st,
+        total_slides: total
+      });
+      if (i === total - 1) {
+        pendo.track("Deck Completed", { total_slides: total });
+      }
+    }
   }
   /* next()/prev() are step-aware: walk builds first, then change slide */
   function next(){
@@ -1527,13 +1550,22 @@ body.embed .frame{ width:min(100vw, calc(100dvh * 16 / 9)); height:min(100dvh, c
     presBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
     presenter.setAttribute('aria-hidden', on ? 'false' : 'true');
     updatePresenter();
+    /* Pendo: track presenter mode toggle */
+    if (typeof pendo !== 'undefined' && pendo.track) {
+      pendo.track("Presenter Mode Toggled", { enabled: on });
+    }
   }
 
   /* ---------- theme + fullscreen ---------- */
   function toggleTheme(){
     var cur = document.documentElement.getAttribute('data-theme');
+    var newTheme = cur === 'light' ? 'dark' : 'light';
     if (cur === 'light') document.documentElement.removeAttribute('data-theme');
     else document.documentElement.setAttribute('data-theme', 'light');
+    /* Pendo: track theme change */
+    if (typeof pendo !== 'undefined' && pendo.track) {
+      pendo.track("Theme Changed", { theme: newTheme });
+    }
   }
   function toggleFullscreen(){
     try{
@@ -1545,6 +1577,10 @@ body.embed .frame{ width:min(100vw, calc(100dvh * 16 / 9)); height:min(100dvh, c
       } else {
         var exit = d.exitFullscreen || d.webkitExitFullscreen || d.mozCancelFullScreen || d.msExitFullscreen;
         if (exit){ var q = exit.call(d); if (q && q.catch) q.catch(function(){}); }
+      }
+      /* Pendo: track fullscreen toggle */
+      if (typeof pendo !== 'undefined' && pendo.track) {
+        pendo.track("Fullscreen Toggled", { entering: !fsEl });
       }
     }catch(e){}
   }
